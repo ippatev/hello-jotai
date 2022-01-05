@@ -1,13 +1,23 @@
+import React from 'react'
 import { useState } from 'react'
-import {atom, useAtom} from 'jotai'
+import {atom, useAtom, Provider} from 'jotai'
+import {atomWithStorage} from 'jotai/utils'
 
 import logo from './logo.svg'
 import './App.css'
 
+import UserInfo from './components/UserInfo'
+
 const countAtom = atom(0)
+const darkModeAtom = atomWithStorage('darkMode', false)
 
 function App() {
   const [count, setCount] = useAtom(countAtom)
+  const [darkMode, setDarkMode] = useAtom(darkModeAtom)
+
+  const toggleDarkMode = () => {
+    setDarkMode(!darkMode)
+  }
 
   return (
     <div className="App">
@@ -20,6 +30,19 @@ function App() {
           </button>
         </p>
       </header>
+      <main className={darkMode ? 'dark' : null}>
+        <div>
+          <h1>Welcome to {darkMode ? 'dark' : 'light'} mode!</h1>
+          <button onClick={toggleDarkMode}>toggle theme</button>
+        </div>
+        <Provider>
+          <React.Suspense fallback={<span>loading...</span>}>
+            <div>
+              <UserInfo/>
+            </div>
+          </React.Suspense>
+        </Provider>
+      </main>
     </div>
   )
 }
